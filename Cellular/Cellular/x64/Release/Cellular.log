@@ -1,0 +1,16 @@
+﻿  Window.cpp
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(13,13): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(13,21): warning C4244: '=' : conversion de 'int' en 'float', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(34,26): warning C4244: 'initialisation' : conversion de 'int' en 'float', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(48,26): warning C4244: 'initialisation' : conversion de 'int' en 'float', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(57,27): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(57,24): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(69,51): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\include\Vector2.h(69,32): warning C4244: 'argument' : conversion de 'float' en 'int', perte possible de données
+C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\Cellular\src\Window.cpp(28,35): warning C4267: 'argument' : conversion de 'size_t' en 'int', perte possible de données
+  Génération de code en cours
+  1 of 179 functions ( 0.6%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    1 functions had inline decision re-evaluated but remain unchanged
+  Fin de la génération du code
+  Cellular.vcxproj -> C:\Users\Hukuna\Documents\Cellular_Automata_Project\Cellular_Automata\Cellular\x64\Release\Cellular.exe

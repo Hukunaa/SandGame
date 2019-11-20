@@ -1,0 +1,3 @@
+﻿  main.cpp
+c:\users\hukuna\documents\cellular_automata_project\cellular_automata\cellular\cellular\main.cpp(4): warning C4326: le type de retour de 'main' doit être 'int' au lieu de 'void'
+sfml-graphics-d.lib(sfml-graphics-d-2.dll) : fatal error LNK1112: type d'ordinateur module 'x64' en conflit avec le type d'ordinateur cible 'x86'
