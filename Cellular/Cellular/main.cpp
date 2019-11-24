@@ -11,8 +11,7 @@
 
 int main()
 {
-    Window Context;
-    std::vector<Particle> particles;
-    Context.Update(particles);
+    Window Context(800, 800, "SandGame");
+    Context.Update();
     return 0;
 }
