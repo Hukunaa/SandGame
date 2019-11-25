@@ -42,8 +42,9 @@ public:
     Vector2 m_velocity{};
     Vector2 m_pos{};
     std::mutex mtx;
+
     Environment::particle_args particle_details{};
-    std::atomic_int screenGridPos;
+    int screenGridPos;
 private:
 
     sf::Color m_color{};
