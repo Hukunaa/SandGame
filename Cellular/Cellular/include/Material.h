@@ -11,7 +11,6 @@ public:
     Material() = default;
     ~Material() = default;
 
-    sf::RectangleShape& GetMaterial() { return m_material; }
     void SetAlive(bool p_value) { is_alive = p_value; }
     std::atomic_bool& GetAlive() { return is_alive; }
 

@@ -90,8 +90,10 @@ void Window::Render(std::vector<Particle*>& allParticles, sf::VertexArray& parti
             {
                 particle->mtx.lock();
                 int screenPos = particle->screenGridPos;
-                sf::Vector2f partPos(particle->GetPos().x, particle->GetPos().y);
+                Vector2 roundedPos = Vector2::roundVector(particle->GetPos(), 4);
                 particle->mtx.unlock();
+
+                sf::Vector2f partPos(roundedPos.x, roundedPos.y);
 
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y), sf::Color::Cyan));
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x + 4, partPos.y), sf::Color::Cyan));

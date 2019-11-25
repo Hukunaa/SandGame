@@ -8,7 +8,7 @@ public:
     { 
         x = 0; y = 0; 
     }
-    Vector2(int px, int py)
+    Vector2(float px, float py)
     {
         x = px; y = py;
     }
@@ -21,39 +21,14 @@ public:
     {
         return Vector2(0, 0);
     }
-    static Vector2 roundUp(Vector2 numToRound, float multiple)
+    static Vector2 roundVector(Vector2 numToRound, float multiple)
     {
         float x;
         float y;
 
-        //X
-        if (multiple == 0)
-            x = numToRound.x;
+        x = round(numToRound.x / multiple)* multiple;
+        y = round(numToRound.y / multiple)* multiple;
 
-        float absolute = abs(numToRound.x);
-        float remainderX = (int)absolute % (int)multiple;
-        if (remainderX == 0)
-            x = numToRound.x;
-
-        if (numToRound.x < 0)
-            x = -(absolute - remainderX);
-        else
-            x = numToRound.x + multiple - remainderX;
-
-        //Y
-        if (multiple == 0)
-            y = numToRound.y;
-
-        float absoluteY = abs(numToRound.y);
-        float remainderY = (int)absoluteY % (int)multiple;
-
-        if (remainderY == 0)
-            y = numToRound.y;
-
-        if (numToRound.y < 0)
-            y = -(absoluteY - remainderY);
-        else
-            y = numToRound.y + multiple - remainderY;
         return Vector2(x, y);
     }
     static Vector2 Add(Vector2& p_vec, Vector2& p_vec2)

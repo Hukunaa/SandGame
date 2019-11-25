@@ -16,14 +16,15 @@ void Game::SetWindow(sf::RenderWindow* p_window)
 
 void Game::SpawnParticle(std::vector<Particle*>& particles)
 {
-    Particle* particle = new Particle(20, 600, 0.1, 0.0001, Particle::STATE::SOLID);
+    Particle* particle = new Particle(20, 600, 0.1, 0.01, Particle::STATE::SOLID);
 
     bool canSpawn = true;
-    particle->SetPos(Vector2::roundUp(Vector2(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y), 4));
+    Vector2 spawnPos = Vector2::roundVector(Vector2(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y), 4);
+    particle->SetPos(spawnPos);
 
     for (int i = 0; i < particles.size(); ++i)
     {
-        if (particle->DoesCollideWith(*particles[i]))
+        if (particle->DoesCollideWith(particles[i]))
             canSpawn = false;
     }
     if (canSpawn)
@@ -35,21 +36,25 @@ void Game::SpawnParticle(std::vector<Particle*>& particles)
 
 void Game::InitPhysicsThread(std::vector<Particle*>& particles)
 {
-    /*PhysicsThread = std::thread(&Game::UpdatePhysics, std::ref(particles));
-    PhysicsThread.detach();*/
+    PhysicsThread = std::thread(&Game::UpdatePhysics, std::ref(particles));
+    PhysicsThread.detach();
 }
 
 void Game::UpdatePhysics(std::vector<Particle*>& particles)
 {
-    while (1)
+    while (true)
     {
-        for (int i = 0; i < particles.size(); ++i)
+        for (Particle* particle : particles)
         {
-            if (particles[i]->mtx.try_lock())
-            {
-                particles[i]->m_velocity.y += Environment::gravity_value * particles[i]->particle_details.m_AirDrag;
-                particles[i]->mtx.unlock();
-            }
+            particle->mtx.lock();
+
+            if(!particle->CheckCollisions(particles))
+                particle->m_velocity.y += Environment::gravity_value * particle->particle_details.m_AirDrag;
+
+            particle->Update();
+            particle->mtx.unlock();
+
         }
+        std::this_thread::sleep_for(std::chrono::microseconds(100));
     }
 }
