@@ -5,6 +5,7 @@
 #include <Particle.h>
 #include <Game.h>
 #include <thread>
+#include <ParticleManager.h>
 
 #include <string>
 #include <mutex>
@@ -21,6 +22,8 @@ public:
     sf::RenderWindow* GetWindow() { return window; }
 
     static void Render(std::vector<Particle*>& allParticles, sf::VertexArray& particle_buffer, int threadNb, std::atomic_bool& canDraw, std::atomic_bool& isDrawing);
+    static void UpdateArrays(ArrData* arr, std::vector<Particle*>& particles);
+
 private:
 
     std::atomic_bool canDraw;
@@ -33,8 +36,10 @@ private:
     sf::Text m_text{};
     sf::Font m_font{};
 
-    std::thread renderT1;
+    std::thread RenderingThread;
+    std::thread ArrayUpdater;
 
+    ArrData* collisionCheck;
     sf::VertexArray particle_buffer1;
 };
 

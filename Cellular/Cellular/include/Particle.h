@@ -2,6 +2,7 @@
 #include <Material.h>
 #include <Environment.h>
 #include <mutex>
+#include <ParticleManager.h>
 
 class Particle : public Material
 {
@@ -28,7 +29,7 @@ public:
     Environment::particle_args& GetDetails() { return particle_details; }
 
     bool DoesCollideWith(Particle* p_mat);
-    bool CheckCollisions(std::vector<Particle*>& particles);
+    bool CheckCollisions(ArrData* particles, Vector2& colPos);
     void SetPos(Vector2 p_pos) { m_pos = p_pos; }
 
     Vector2 m_velocity{};
@@ -41,8 +42,8 @@ private:
 
     sf::Color m_color{};
     STATE m_particleType{};
-};
 
+};
 
 
     /*Particle(const Particle& part)

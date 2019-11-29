@@ -7,6 +7,8 @@
 #include <thread>
 #include <mutex>
 
+class Window;
+
 class Game
 {
 public:
@@ -15,8 +17,9 @@ public:
 
     static void SetWindow(sf::RenderWindow* window);
     static void SpawnParticle(std::vector<Particle*>& particles);
-    static void InitPhysicsThread(std::vector<Particle*>& particles);
-    static void UpdatePhysics(std::vector<Particle*>& particles);
+    static void InitPhysicsThread(ArrData* arr, std::vector<Particle*>& particles, Window* window);
+    static void UpdatePhysics(std::vector<Particle*>& particles, ArrData* arr, Window* window);
+    static void UpdateParticles(std::vector<Particle*>& particles, ArrData* arr);
 
     static bool isGameOn;
 private:
@@ -26,6 +29,7 @@ private:
     static std::thread RenderingThread;
     static std::thread PhysicsThread;
     static std::thread LogicThread;
+
 
 };
 

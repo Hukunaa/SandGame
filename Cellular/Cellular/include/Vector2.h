@@ -26,8 +26,8 @@ public:
         float x;
         float y;
 
-        x = round(numToRound.x / multiple)* multiple;
-        y = round(numToRound.y / multiple)* multiple;
+        x = round(numToRound.x / multiple) * multiple;
+        y = round(numToRound.y / multiple) * multiple;
 
         return Vector2(x, y);
     }
@@ -39,6 +39,7 @@ public:
         return result;
     }
 
+    float GetMagnitude() { return sqrt(pow(x, 2) + pow(y, 2)); }
     Vector2 operator +=(const Vector2& p_vec)
     {
         return Vector2(this->x + p_vec.x, this->y + p_vec.y);

@@ -9,6 +9,10 @@ Window::Window()
 Window::Window(int x, int y, std::string name)
 {
     window = new sf::RenderWindow(sf::VideoMode(x, y), name);
+    collisionCheck = new ArrData[40000];
+
+    for(int i = 0; i < 40000; ++i)
+        collisionCheck[i].part = nullptr;
 
     if (!m_font.loadFromFile("include/Minecraft.ttf"))
         std::cout << "CAN'T LOAD FONT FILE!\n";
@@ -19,11 +23,14 @@ Window::Window(int x, int y, std::string name)
     isDrawing.store(false);
 
     Game::SetWindow(window);
-    Game::InitPhysicsThread(particles);
+    Game::InitPhysicsThread(collisionCheck, particles, this);
 
     particle_buffer1 = sf::VertexArray(sf::Quads);
-    renderT1 = std::thread(&Window::Render, std::ref(particles), std::ref(particle_buffer1), 1, std::ref(canDraw), std::ref(isDrawing));
-    renderT1.detach();
+    RenderingThread = std::thread(&Window::Render, std::ref(particles), std::ref(particle_buffer1), 1, std::ref(canDraw), std::ref(isDrawing));
+    RenderingThread.detach();
+
+    /*ArrayUpdater = std::thread(&Window::UpdateArrays, collisionCheck, std::ref(particles));
+    ArrayUpdater.detach();*/
 
 }
 Window::~Window()
@@ -37,6 +44,7 @@ void Window::Update()
     float oldTime = 0;
     float newTime = 0;
     float DeltaTime = 0;
+    float tmpTime = 0;
     while (window->isOpen())
     {
         oldTime = newTime;
@@ -88,15 +96,15 @@ void Window::Render(std::vector<Particle*>& allParticles, sf::VertexArray& parti
             particle_buffer.clear();
             for (Particle* particle : allParticles)
             {
-                particle->mtx.lock();
+                //particle->mtx.lock();
                 int screenPos = particle->screenGridPos;
-                Vector2 roundedPos = Vector2::roundVector(particle->GetPos(), 4);
-                particle->mtx.unlock();
+                Vector2 roundedPos = Vector2::roundVector(particle->m_pos, 4);
+                //particle->mtx.unlock();
 
                 sf::Vector2f partPos(roundedPos.x, roundedPos.y);
 
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y), sf::Color::Cyan));
-                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x + 4, partPos.y), sf::Color::Cyan));
+                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x  + 4, partPos.y), sf::Color::Cyan));
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x + 4, partPos.y + 4), sf::Color::Cyan));
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y + 4), sf::Color::Cyan));
             }
@@ -108,66 +116,21 @@ void Window::Render(std::vector<Particle*>& allParticles, sf::VertexArray& parti
     }
 }
 
-/*void Window::SplitThreadRendering(std::vector<Particle*>& allParticles)
+void Window::UpdateArrays(ArrData* arr, std::vector<Particle*>& particles)
 {
-    while (true)
+    for (int i = 0; i < 40000; ++i)
+        arr[i].part = nullptr;
+
+    for (Particle* particle : particles)
     {
-        if (allParticles.size() > 0)
-        {
-            for (Particle* particle : allParticles)
-            {
-                if (particle->m_pos.x < 400 && particle->m_pos.y < 800)
-                {
-                    particle->mtx.lock();
-                    particle->screenGridPos = 1;
-                    particle->mtx.unlock();
-                }
+        Vector2 pos = Vector2::roundVector(particle->m_pos, 4);
+        int posX = pos.x / 4;
+        int posY = pos.y / 4;
 
-                if (particle->m_pos.x >= 400 && particle->m_pos.y < 800 && particle->m_pos.x < 800)
-                {
-                    particle->mtx.lock();
-                    particle->screenGridPos = 2;
-                    particle->mtx.unlock();
-                }
+        //arr[posY * 200 + posX].mtx.lock();
+        arr[posY * 200 + posX].part = particle;
+        //arr[posY * 200 + posX].mtx.unlock();
 
-                if (particle->m_pos.x < 400 && particle->m_pos.y >= 400 && particle->m_pos.y < 800)
-                    particle->screenGridPos = 3;
-
-                if (particle->m_pos.x >= 400 && particle->m_pos.y >= 400 && particle->m_pos.x < 800 && particle->m_pos.y < 800)
-                    particle->screenGridPos = 4;
-            }
-        }
-        std::this_thread::sleep_for(std::chrono::microseconds(6900));
+        //std::cout << "Col pos:" << posX << " / " << posY << "\n";
     }
-}*/
-
-
-//for (int i = 0; i < particles.size(); ++i)
-//{
-    //particles[i]->GetPos().x < window->getSize().x && particles[i]->GetPos().y < window->getSize().y
-
-    /*if (particles[i]->mtx.try_lock())
-    {
-        particles[i]->Update();
-        particles[i]->mtx.unlock();
-    }*/
-    //window->draw(particles[i]->GetMaterial());
-
-        //std::vector<Particle*>::iterator it = Game::GetParticles().begin();
-        //std::advance(it, i);
-        //Game::GetParticles().erase(it);
-//}
-//Draw(particles);
-
-    //renderT2.detach();
-    /*renderT3.detach();
-    renderT4.detach();*/
-
-
-    //renderT2 = std::thread(&Window::Render, std::ref(particles), std::ref(particle_buffer2), 2);
-    /*renderT3 = std::thread(&Window::Render, std::ref(particles), std::ref(particle_buffer3), 3);
-    renderT4 = std::thread(&Window::Render, std::ref(particles), std::ref(particle_buffer4), 4);*/
-
-    //particle_buffer2 = sf::VertexArray(sf::Quads);
-    /*particle_buffer3 = sf::VertexBuffer(sf::Quads);
-    particle_buffer4 = sf::VertexBuffer(sf::Quads);*/
+}

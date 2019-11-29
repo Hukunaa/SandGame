@@ -1,7 +1,12 @@
 #pragma once
-class ParticleManager
+#include <Particle.h>
+#include <mutex>
+
+class Particle;
+
+struct ArrData
 {
-public:
-    static 
+    std::mutex mtx;
+    Particle* part;
 };
 
