@@ -16,8 +16,11 @@ void Game::SetWindow(sf::RenderWindow* p_window)
 
 void Game::SpawnParticle(std::vector<Particle*>& particles)
 {
-    Vector2 spawnPos = Vector2::roundVector(Vector2(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y), 4);
-    if (spawnPos.x > 800 || spawnPos.x < 0 || spawnPos.y > 799 && spawnPos.y < 1)
+    Vector2 rawPos = Vector2(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y);
+    Vector2 spawnPos = Vector2::roundVector(rawPos, 4);
+    std::cout << rawPos.x << " / " << rawPos.y << "\n";
+
+    if (rawPos.x > 800 || rawPos.x < 0 || rawPos.y > 800 || rawPos.y < 0)
         return;
 
     Particle* particle = new Particle(20, 600, 0.1, 0.01, Particle::STATE::SOLID);

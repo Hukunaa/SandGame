@@ -71,7 +71,7 @@ void Window::Update()
         
         window->display();
         DeltaTime =  1 / ((newTime - oldTime) / 1000000);
-        std::cout << "FPS: " << DeltaTime << '\n';
+        //std::cout << "FPS: " << DeltaTime << '\n';
     }
 }
 
