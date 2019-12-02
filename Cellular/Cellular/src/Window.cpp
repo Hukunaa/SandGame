@@ -11,12 +11,13 @@ Window::Window(int x, int y, std::string name)
     window = new sf::RenderWindow(sf::VideoMode(x, y), name);
     collisionCheck = new ArrData[40000];
 
-    for(int i = 0; i < 40000; ++i)
+    for (int i = 0; i < 40000; ++i)
         collisionCheck[i].part = nullptr;
 
     if (!m_font.loadFromFile("include/Minecraft.ttf"))
         std::cout << "CAN'T LOAD FONT FILE!\n";
     m_text.setFont(m_font);
+    m_fps.setFont(m_font);
     particles.reserve(50000);
 
     canDraw.store(false);
@@ -45,19 +46,22 @@ void Window::Update()
     float newTime = 0;
     float DeltaTime = 0;
     float tmpTime = 0;
+    m_text.setCharacterSize(14);
+    m_fps.setCharacterSize(14);
+    m_fps.setPosition(sf::Vector2f(0, 15));
+
     while (window->isOpen())
     {
         oldTime = newTime;
         newTime = time.getElapsedTime().asMicroseconds();
         CheckEvents();
         std::string text = std::to_string(particles.size());
-        m_text.setCharacterSize(12);
         m_text.setString(text);
 
-
-        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        if (time.getElapsedTime().asMilliseconds() > tmpTime)
         {
-            Game::SpawnParticle(particles);
+            m_fps.setString(std::to_string(DeltaTime));
+            tmpTime = time.getElapsedTime().asMilliseconds() + 100;
         }
 
         if (particle_buffer1.getVertexCount() > 3 && canDraw.load())
@@ -65,13 +69,13 @@ void Window::Update()
             isDrawing.store(true);
             window->clear();
             window->draw(m_text);
+            window->draw(m_fps);
             window->draw(particle_buffer1);
             isDrawing.store(false);
         }
         
         window->display();
         DeltaTime =  1 / ((newTime - oldTime) / 1000000);
-        //std::cout << "FPS: " << DeltaTime << '\n';
     }
 }
 
@@ -103,10 +107,10 @@ void Window::Render(std::vector<Particle*>& allParticles, sf::VertexArray& parti
 
                 sf::Vector2f partPos(roundedPos.x, roundedPos.y);
 
-                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y), sf::Color::Cyan));
+                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y), sf::Color::Magenta));
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x  + 4, partPos.y), sf::Color::Cyan));
                 particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x + 4, partPos.y + 4), sf::Color::Cyan));
-                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y + 4), sf::Color::Cyan));
+                particle_buffer.append(sf::Vertex(sf::Vector2f(partPos.x, partPos.y + 4), sf::Color::Magenta));
             }
             canDraw.store(true);
         }
@@ -133,4 +137,5 @@ void Window::UpdateArrays(ArrData* arr, std::vector<Particle*>& particles)
 
         //std::cout << "Col pos:" << posX << " / " << posY << "\n";
     }
+
 }

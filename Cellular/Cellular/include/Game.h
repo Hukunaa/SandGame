@@ -16,7 +16,7 @@ public:
     //static std::mutex& GetMutex() { return mtx; }
 
     static void SetWindow(sf::RenderWindow* window);
-    static void SpawnParticle(std::vector<Particle*>& particles);
+    static void SpawnParticle(std::vector<Particle*>& particles, ArrData* arr, Particle::STATE state);
     static void InitPhysicsThread(ArrData* arr, std::vector<Particle*>& particles, Window* window);
     static void UpdatePhysics(std::vector<Particle*>& particles, ArrData* arr, Window* window);
     static void UpdateParticles(std::vector<Particle*>& particles, ArrData* arr);

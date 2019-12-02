@@ -31,34 +31,32 @@ void Particle::Update()
 }
 
 
-bool Particle::DoesCollideWith(Particle* p_mat)
+bool Particle::DoesCollideWith(ArrData* arr)
 {
     Vector2 pos = Vector2::roundVector(m_pos, 4);
-    Vector2 posB = Vector2::roundVector(p_mat->m_pos, 4);
+    int x = pos.x / 4;
+    int y = pos.y / 4;
 
-    if (pos.x == posB.x && pos.y == posB.y)
-        return true;
+    if (arr[y * 200 + x].part != nullptr)
+    {
+        if(arr[y * 200 + x].part != this)
+            return true;
+    }
+    else
+        return false;
     
-    return false;
 }
 
 bool Particle::CheckCollisions(ArrData* particles, Vector2& colPos)
 {
     bool isColliding = false;
-    /*sf::Vector2f pos(GetPos().x, GetPos().y);
-    sf::Vector2f vel(GetVelocity().x, GetVelocity().y);*/
-    //Vector2 roundedVelocity = Vector2::roundVector(Vector2(vel.x, vel.y), 4);
-    //float roundedMagnitude = roundedVelocity.GetMagnitude();
 
-
-    /*Vector2 finalPos(pos.x + vel.x, pos.y + vel.y);
-    finalPos = Vector2::roundVector(finalPos, 4);*/
     Vector2 pos = Vector2::roundVector(m_pos, 4);
-    Vector2 vel = Vector2::roundVector(m_velocity, 4);
+    //Vector2 vel = Vector2::roundVector(m_velocity, 4);
 
     Vector2 finalPos;
-    finalPos.x = pos.x + vel.x;
-    finalPos.y = pos.y + vel.y;
+    finalPos.x = pos.x + m_velocity.x;
+    finalPos.y = pos.y + m_velocity.y;
 
     if (finalPos.y > 400)
     {
@@ -68,51 +66,27 @@ bool Particle::CheckCollisions(ArrData* particles, Vector2& colPos)
         isColliding = true;
         return isColliding;
     }
+    int loop = m_velocity.y / 4;
 
-    Vector2 predictedVector;
-    predictedVector.x = pos.x + vel.x;
-    predictedVector.y = pos.y + vel.y;
-
-    int arrPx = predictedVector.x / 4;
-    int arrPy = predictedVector.y / 4;
-
-    if (particles[arrPy * 200 + arrPx].part != nullptr)
+    for(int i = 1; i <= loop; ++i)
     {
-        //particles[arrPy * 800 + arrPx].mtx.lock();
-        if (particles[arrPy * 200 + arrPx].part != this)
+
+        int arrPx = m_pos.x / 4;
+        int arrPy = (m_pos.y + (4 * i)) / 4;
+
+        if (particles[arrPy * 200 + arrPx].part != nullptr)
         {
-            isColliding = true;
-            colPos.x = predictedVector.x - vel.x;
-            colPos.y = predictedVector.y - vel.y;
-            return isColliding;
-        }
-        //particles[arrPy * 800 + arrPx].mtx.unlock();
-    }
-    /*for (int i = 0; i < vel.y; ++i)
-    {
-        Vector2 tmpVel;
-        tmpVel.x = (vel.x) * i;
-        tmpVel.y = (vel.y) * i;
-
-        Vector2 predictedVector;
-        predictedVector.x = pos.x + tmpVel.x;
-        predictedVector.y = pos.y + tmpVel.y;
-
-        int arrPx = predictedVector.x;
-        int arrPy = predictedVector.y;
-
-        if (particles[arrPy * 800 + arrPx].part != nullptr)
-        {
-            //particles[arrPy * 200 + arrPx].mtx.lock();
-            if(particles[arrPy * 800 + arrPx].part != this)
+            //particles[arrPy * 800 + arrPx].mtx.lock();
+            if (particles[arrPy * 200 + arrPx].part != this)
             {
                 isColliding = true;
-                colPos = predictedVector;
+                colPos.x = m_pos.x;
+                colPos.y = m_pos.y + (4 * i) - 4;
+                m_velocity.y = 0;
                 return isColliding;
             }
-            //particles[arrPy * 200 + arrPx].mtx.unlock();
+            //particles[arrPy * 800 + arrPx].mtx.unlock();
         }
-
-    }*/
-    return isColliding;
+    }
+    return false;
 }

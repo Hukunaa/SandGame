@@ -4,6 +4,8 @@
 #include <mutex>
 #include <ParticleManager.h>
 
+struct ArrData;
+
 class Particle : public Material
 {
 public:
@@ -23,16 +25,17 @@ public:
 
     void Update();
 
-    STATE& GetType() { return m_particleType; }
+    STATE& GetState() { return m_particleType; }
     Vector2& GetPos() { return m_pos; }
     Vector2& GetVelocity() { return m_velocity; }
     Environment::particle_args& GetDetails() { return particle_details; }
 
-    bool DoesCollideWith(Particle* p_mat);
+    bool DoesCollideWith(ArrData* arr);
     bool CheckCollisions(ArrData* particles, Vector2& colPos);
     void SetPos(Vector2 p_pos) { m_pos = p_pos; }
 
     Vector2 m_velocity{};
+    Vector2 rawVelocity{};
     Vector2 m_pos{};
     std::mutex mtx;
 

@@ -34,6 +34,7 @@ private:
     sf::RenderWindow* window{};
     std::vector<Particle*> particles{};
     sf::Text m_text{};
+    sf::Text m_fps{};
     sf::Font m_font{};
 
     std::thread RenderingThread;

@@ -14,25 +14,22 @@ void Game::SetWindow(sf::RenderWindow* p_window)
     isGameOn = true;
 }
 
-void Game::SpawnParticle(std::vector<Particle*>& particles)
+void Game::SpawnParticle(std::vector<Particle*>& particles, ArrData* arr, Particle::STATE state)
 {
     Vector2 rawPos = Vector2(sf::Mouse::getPosition(*window).x, sf::Mouse::getPosition(*window).y);
     Vector2 spawnPos = Vector2::roundVector(rawPos, 4);
-    std::cout << rawPos.x << " / " << rawPos.y << "\n";
 
-    if (rawPos.x > 800 || rawPos.x < 0 || rawPos.y > 800 || rawPos.y < 0)
+    if (rawPos.x > 796 || rawPos.x < 0 || rawPos.y > 796 || rawPos.y < 0)
         return;
 
-    Particle* particle = new Particle(20, 600, 0.1, 0.01, Particle::STATE::SOLID);
+    Particle* particle = new Particle(20, 600, 0.1, 0.01, state);
 
     bool canSpawn = true;
     particle->m_pos = spawnPos;
 
-    for (int i = 0; i < particles.size(); ++i)
-    {
-        if (particle->DoesCollideWith(particles[i]))
-            canSpawn = false;
-    }
+    if (particle->DoesCollideWith(arr))
+        canSpawn = false;
+
     if (canSpawn)
     {
         particle->SetAlive(true);
@@ -50,14 +47,32 @@ void Game::UpdatePhysics(std::vector<Particle*>& particles, ArrData* arr, Window
 {
     while (true)
     {
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Left))
+        {
+            Game::SpawnParticle(particles, arr, Particle::STATE::SOLID);
+        }
+
+        if (sf::Mouse::isButtonPressed(sf::Mouse::Button::Right))
+        {
+            Game::SpawnParticle(particles, arr, Particle::STATE::LIQUID);
+        }
+
         window->UpdateArrays(arr, particles);
+
         for (Particle* particle : particles)
         {
             //particle->mtx.lock();
 
-            //particle->m_velocity.y += Environment::gravity_value * particle->particle_details.m_AirDrag;
-            //particle->m_Rvelocity = Vector2::roundVector(particle->m_velocity, 4);
-            particle->m_velocity.y = 4;
+            if (particle->GetState() == Particle::STATE::LIQUID)
+            {
+                particle->rawVelocity.y += Environment::gravity_value * particle->particle_details.m_AirDrag;
+                particle->m_velocity = Vector2::roundVector(particle->rawVelocity, 4);
+                //particle->m_velocity.y = 12;
+            }
+
+            if (particle->GetState() == Particle::STATE::SOLID)
+                particle->m_velocity.y = 0;
+
             Vector2 collisionVec;
             if (particle->CheckCollisions(arr, collisionVec))
             {
